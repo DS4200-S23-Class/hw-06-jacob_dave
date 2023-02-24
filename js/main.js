@@ -12,6 +12,18 @@ const FRAME1 = d3.select('#vis1')
                         .attr('width', FRAME_WIDTH)
                         .attr('class', 'frame');
 
+const FRAME2 = d3.select('#vis2')
+                    .append('svg')
+                        .attr('height', FRAME_HEIGHT)
+                        .attr('width', FRAME_WIDTH)
+                        .attr('class', 'frame');
+
+const FRAME3 = d3.select('#vis3')
+                    .append('svg')
+                        .attr('height', FRAME_HEIGHT)
+                        .attr('width', FRAME_WIDTH)
+                        .attr('class', 'frame');
+
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.top - MARGINS.bottom
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right
 
@@ -73,4 +85,94 @@ function first_scatter() {
     });
 };
 
+function second_scatter() {
+    d3.csv('data/iris.csv').then((data) => {
+        // Establish max and min bounds for data
+        const MAX_X = d3.max(data, (d) => {
+            return parseFloat(d.Petal_Width)
+        });
+        
+
+        const MAX_Y = d3.max(data, (d) => {
+            return parseFloat(d.Sepal_Width)
+        });
+        console.log(MAX_X);
+        console.log(MAX_Y);
+
+        // making scaling functions for both x and y values
+        const X_SCALE = d3.scaleLinear()
+            .domain([0, MAX_X])
+            .range([0, VIS_WIDTH]);
+
+        const Y_SCALE = d3.scaleLinear()
+            .domain([0, MAX_Y])
+            .range([VIS_HEIGHT, 0]);
+        
+        const myColor = d3.scaleOrdinal().domain(data)
+            .range(["green", "purple", "orange"])
+
+        // adding pointsx
+        FRAME2.selectAll('points')
+            .data(data)
+            .enter()
+            .append('circle')
+            .attr('cx', (d) => {
+                return (MARGINS.left + X_SCALE(d.Petal_Width))
+            })
+            .attr('cy', (d) => {
+                return (MARGINS.top + Y_SCALE(d.Sepal_Width))
+            })
+            .attr('r', 5)
+            .attr('fill', function(d){return myColor(d.Species)})
+            .attr('opacity', 0.5)
+            .attr('class', 'point');
+        
+        // add y axis
+        FRAME2.append('g')
+            .attr('transform', 'translate(' + MARGINS.top + ',' + MARGINS.left + ')')
+            .call(d3.axisLeft(Y_SCALE).ticks(10))
+            .attr('font-size', '10px');
+
+        // add x axis
+        FRAME2.append('g')
+            .attr('transform', 'translate(' + MARGINS.left + ',' + (VIS_HEIGHT + MARGINS.top) + ')')
+            .call(d3.axisBottom(X_SCALE).ticks(10))
+            .attr('font-size', '10px');
+        
+    });
+};
+
+function third_scatter() {
+    const dataset = [
+        {label: "setosa", value: 50},
+        {label: "versicolor", value: 50},
+        {label: "verginica", value: 50}
+      ];
+
+    const padding = 0.2;
+    
+    const xScale = d3.scaleBand()
+      .domain(dataset.map(d => d.label))
+      .range([MARINS.left, VIS_WIDTH - MARGINS.right])
+      .padding(padding);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(dataset, d => d.value)])
+      .range([VIS_HEIGHT - MARGINS.bottom, MARGINS.top]);
+
+    // adding pointsx
+    FRAME3.selectAll('rect')
+            .data(dataset)
+            .enter()
+            .append('rect')
+            .attr('x', d => xScale(d.label))
+            .attr('width', X_SCALE.bandwidth())
+            .attr('y', d => yScale(d.value))
+            .attr('height', d => VIS_HEIGHT - MARGINS.bottom - yScale(d.value))
+            .attr('fill', 'blue')
+            .attr('class', 'rect');
+};
+
 first_scatter();
+second_scatter();
+third_scatter();
