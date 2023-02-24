@@ -20,28 +20,23 @@ function first_scatter() {
     d3.csv('data/iris.csv').then((data) => {
         // Establish max and min bounds for data
         const MAX_X = d3.max(data, (d) => {
-            return parseInt(d.Sepal_Length)
-        });
-
-        const MIN_X = d3.min(data, (d) => {
-            return parseInt(d.Sepal_Length)
+            return parseFloat(d.Sepal_Length)
         });
         
-        const MAX_Y = d3.max(data, (d) => {
-            return parseInt(d.Sepal_Width)
-        })
 
-        const MIN_Y = d3.min(data, (d) => {
-            return parseInt(d.Sepal_Width)
-        })
+        const MAX_Y = d3.max(data, (d) => {
+            return parseFloat(d.Petal_Length)
+        });
+        console.log(MAX_X);
+        console.log(MAX_Y);
 
         // making scaling functions for both x and y values
         const X_SCALE = d3.scaleLinear()
-            .domain([MIN_X - 0.25, MAX_X + 0.25])
+            .domain([0, MAX_X])
             .range([0, VIS_WIDTH]);
 
         const Y_SCALE = d3.scaleLinear()
-            .domain([MIN_Y - 0.25, MAX_Y + 0.25])
+            .domain([0, MAX_Y])
             .range([VIS_HEIGHT, 0]);
         
         const myColor = d3.scaleOrdinal().domain(data)
@@ -56,9 +51,9 @@ function first_scatter() {
                 return (MARGINS.left + X_SCALE(d.Sepal_Length))
             })
             .attr('cy', (d) => {
-                return (MARGINS.top + Y_SCALE(d.Sepal_Width))
+                return (MARGINS.top + Y_SCALE(d.Petal_Length))
             })
-            .attr('r', 2)
+            .attr('r', 5)
             .attr('fill', function(d){return myColor(d.Species)})
             .attr('opacity', 0.5)
             .attr('class', 'point');
