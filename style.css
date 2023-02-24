@@ -1,0 +1,16 @@
+body{
+    font-family: Arial;
+}
+
+.center{
+    text-align: center;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+}
+
+#column {
+    flex:33%;
+}
