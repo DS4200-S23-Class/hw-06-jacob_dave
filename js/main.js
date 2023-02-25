@@ -193,41 +193,29 @@ function third_scatter() {
 
 };
 
-// checking if a point is in a selection
-function isPointInBrushSelection(point, brushSelection) {
-    const [x0, y0] = brushSelection[0];
-    const [x1, y1] = brushSelection[1];
-  
-    return point.x >= x0 && point.x <= x1 && point.y >= y0 && point.y <= y1;
-}
+FRAME2.call(d3.brush()
+    .extent([[MARGINS.left, MARGINS.bottom], [VIS_WIDTH + MARGINS.left, VIS_HEIGHT+  MARGINS.top]])
+        .on("start brush", updateChart)
+  );
 
 // function for when brush occurs
-function brushed() {
-    const brushSelection = d3.event.selection;
-    //this part isn't working
-    console.log(brushSelection);
-    if (brushSelection) {
-        // iterate through each point
-        points.each(function(d) {
-            const point = d3.select(this);
-            const included = isPointInBrushSelection({ x: point.attr("cx"), y: point.attr("cy") }, brushSelection);
-            point.classed("highlighted", included);
-        });
-    } else {
-    // if the brush is cleared, remove all highlights
-        points.classed("highlighted", false);
-    }
+function updateChart() {
+    extent = d3.event.selection;
+
+    // not working here
+    console.log(X_SCALE(d.Petal_Width));
+    FRAME2.classed("selected", function(d){ return isPointInBrushSelection(extent, X_SCALE(d.Petal_Width), Y_SCALE(d.Sepal_Width)) } );
 }
 
-// brushing
-const BRUSH = d3.brush()
-.extent([[MARGINS.left, MARGINS.bottom], [VIS_WIDTH + MARGINS.left, VIS_HEIGHT+  MARGINS.top]])
-  .on("brush", brushed);
+// checking if a point is in a selection
+function isPointInBrushSelection(extent, cx, cy) {
+    const x0 = extent[0][0];
+    const x1 = extent[1][0];
+    const y0 = extent[0][1];
+    const y1 = extent[1][1];  
 
-FRAME2.append("g")
-  .attr("class", "brush")
-  .call(BRUSH);
-
+    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+}
 
 
 

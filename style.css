@@ -6,6 +6,12 @@ body{
     text-align: center;
 }
 
+.selected {
+    opacity: 1;
+    stroke: black;
+    stroke-width: 1px;
+}
+
 .flex {
     display: flex;
     flex-direction: row;
@@ -13,8 +19,4 @@ body{
 
 #column {
     flex:33%;
-}
-
-#highlighted {
-    fill-opacity: .75;
 }
