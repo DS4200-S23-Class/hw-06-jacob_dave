@@ -134,7 +134,6 @@ function second_scatter() {
             .attr('transform', 'translate(' + MARGINS.left + ',' + (VIS_HEIGHT + MARGINS.top) + ')')
             .call(d3.axisBottom(X_SCALE).ticks(10))
             .attr('font-size', '10px');
-        
     });
 };
 
@@ -193,6 +192,45 @@ function third_scatter() {
             .attr('font-size', '10px') 
 
 };
+
+// checking if a point is in a selection
+function isPointInBrushSelection(point, brushSelection) {
+    const [x0, y0] = brushSelection[0];
+    const [x1, y1] = brushSelection[1];
+  
+    return point.x >= x0 && point.x <= x1 && point.y >= y0 && point.y <= y1;
+}
+
+// function for when brush occurs
+function brushed() {
+    const brushSelection = d3.event.selection;
+    //this part isn't working
+    console.log(brushSelection);
+    if (brushSelection) {
+        // iterate through each point
+        points.each(function(d) {
+            const point = d3.select(this);
+            const included = isPointInBrushSelection({ x: point.attr("cx"), y: point.attr("cy") }, brushSelection);
+            point.classed("highlighted", included);
+        });
+    } else {
+    // if the brush is cleared, remove all highlights
+        points.classed("highlighted", false);
+    }
+}
+
+// brushing
+const BRUSH = d3.brush()
+.extent([[MARGINS.left, MARGINS.bottom], [VIS_WIDTH + MARGINS.left, VIS_HEIGHT+  MARGINS.top]])
+  .on("brush", brushed);
+
+FRAME2.append("g")
+  .attr("class", "brush")
+  .call(BRUSH);
+
+
+
+
 
 first_scatter();
 second_scatter();

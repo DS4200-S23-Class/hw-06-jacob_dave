@@ -14,3 +14,7 @@ body{
 #column {
     flex:33%;
 }
+
+#highlighted {
+    fill-opacity: .75;
+}
