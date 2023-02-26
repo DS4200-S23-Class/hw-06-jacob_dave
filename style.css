@@ -9,19 +9,18 @@ body{
 .flex {
     display: flex;
     flex-direction: row;
+    justify-content: space-evenly;
 }
 
 .point {
-	opacity: 0.5;
+	opacity: 0.3;
 }
 
 .selected {
-    stroke: black;
-    stroke-width: 1px;
-    opacity: 1;
+    stroke: orange;
+    stroke-width: 1.5px;
+    opacity: 1 !important;
 }
 
-#column {
-    flex:33%;
-}
+
 
