@@ -6,17 +6,22 @@ body{
     text-align: center;
 }
 
-.selected {
-    opacity: 1;
-    stroke: black;
-    stroke-width: 1px;
-}
-
 .flex {
     display: flex;
     flex-direction: row;
 }
 
+.point {
+	opacity: 0.5;
+}
+
+.selected {
+    stroke: black;
+    stroke-width: 1px;
+    opacity: 1;
+}
+
 #column {
     flex:33%;
 }
+

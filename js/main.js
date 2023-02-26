@@ -108,7 +108,7 @@ function second_scatter() {
             .range(["green", "purple", "orange"])
 
         // adding points
-        FRAME2.selectAll('points')
+        const framePoints = FRAME2.selectAll('points')
             .data(data)
             .enter()
             .append('circle')
@@ -119,8 +119,8 @@ function second_scatter() {
                 return (MARGINS.top + Y_SCALE(d.Sepal_Width))
             })
             .attr('r', 5)
-            .attr('fill', function(d){return COLOR(d.Species)})
             .attr('opacity', 0.5)
+            .attr('fill', function(d){return COLOR(d.Species)})
             .attr('class', 'point');
         
         // add y axis
@@ -134,6 +134,29 @@ function second_scatter() {
             .attr('transform', 'translate(' + MARGINS.left + ',' + (VIS_HEIGHT + MARGINS.top) + ')')
             .call(d3.axisBottom(X_SCALE).ticks(10))
             .attr('font-size', '10px');
+
+        FRAME2.call(d3.brush()
+            .extent([[MARGINS.left, MARGINS.bottom], [VIS_WIDTH + MARGINS.left, VIS_HEIGHT+  MARGINS.top]])
+                .on("start brush", updateChart)
+          );
+        
+        // function for when brush occurs
+        function updateChart(event) {
+            extent = event.selection;
+            
+            // adding the selected class if the function returns True
+            framePoints.classed("selected", function(d){ return isPointInBrushSelection(extent, X_SCALE(d.Petal_Width) + MARGINS.left, Y_SCALE(d.Sepal_Width) + MARGINS.top )} );
+        }
+
+        // checking if a point is in a selection
+        function isPointInBrushSelection(extent, cx, cy) {
+            const x0 = extent[0][0];
+            const x1 = extent[1][0];
+            const y0 = extent[0][1];
+            const y1 = extent[1][1];  
+
+            return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
+        }
     });
 };
 
@@ -192,33 +215,6 @@ function third_scatter() {
             .attr('font-size', '10px') 
 
 };
-
-FRAME2.call(d3.brush()
-    .extent([[MARGINS.left, MARGINS.bottom], [VIS_WIDTH + MARGINS.left, VIS_HEIGHT+  MARGINS.top]])
-        .on("start brush", updateChart)
-  );
-
-// function for when brush occurs
-function updateChart() {
-    extent = d3.event.selection;
-
-    // not working here
-    console.log(X_SCALE(d.Petal_Width));
-    FRAME2.classed("selected", function(d){ return isPointInBrushSelection(extent, X_SCALE(d.Petal_Width), Y_SCALE(d.Sepal_Width)) } );
-}
-
-// checking if a point is in a selection
-function isPointInBrushSelection(extent, cx, cy) {
-    const x0 = extent[0][0];
-    const x1 = extent[1][0];
-    const y0 = extent[0][1];
-    const y1 = extent[1][1];  
-
-    return x0 <= cx && cx <= x1 && y0 <= cy && cy <= y1;
-}
-
-
-
 
 first_scatter();
 second_scatter();
